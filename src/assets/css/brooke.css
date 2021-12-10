@@ -40,7 +40,10 @@ p.instructions {
   box-sizing: border-box;
   resize: none;
 }
-
+/* .note-editor textarea[name="body"]{
+  height: 50px;
+  width: 100%;
+} */
 .nav-bar {
   width: 100%;
   background-image: linear-gradient(to right top, #8C33E3, #696CE8, #4A9EEC);
@@ -98,6 +101,13 @@ div.sidebar ul li {
   list-style: none;
   border-bottom: 1px solid grey;
   padding: 0 5px;
+}
+
+div.sidebar ul li p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
 }
 
 div.sidebar ul li:first-child {

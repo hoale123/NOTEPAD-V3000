@@ -1,10 +1,13 @@
 import React from "react";
 
-function NoteItem() {
+function NoteItem({note,onClick}) {
+  // function handleClick(){
+  //   onSelectedNote(note)
+  // }
   return (
-    <li>
-      <h2>Title</h2>
-      <p>Caption...</p>
+    <li onClick={onClick} >
+      <h2>{note.title}</h2>
+      <p>{note.body}</p>
     </li>
   );
 }
