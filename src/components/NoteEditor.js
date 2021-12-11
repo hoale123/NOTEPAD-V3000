@@ -1,39 +1,55 @@
 import React, { useState } from "react";
 
-function NoteEditor({note,onSave,onCancel}) {
-  const [noted, setNote] = useState({
-    noted: note,
-  })
+function NoteEditor({note,onCancel}) {
+  const [noteTitle, setNoteTitle] = useState(note.title)
+  const [noteBody, setNoteBody] = useState(note.body)
 
-  const handleChange = (e) => {
-    const note = {
-      ...noted,
-      [e.target.name]: e.target.value,
-    }
-    setNote({note})
-  }
 
   const saveChanges = (e) => {
     e.preventDefault();
-    onSave(note)
+    let editedNote = {
+      userId: note.userId,
+      title: noteTitle,
+      body: noteBody
+    }
+    fetch(`http://localhost:3000/notes/${note.id}`, {
+      method: "PATCH",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify(editedNote),
+    })
+    note.title = noteTitle
+    note.body = noteBody
+    onCancel(false)
   }
-  const {title, body} = note
+  const handleNoteCancel = () => {
+    setNoteTitle(note.title)
+    setNoteBody(note.body)
+    onCancel(false)
+  }
+  // const {title, body, id} = note
   return (
-    <form onSubmit={saveChanges} className="note-editor">
+    <form className="note-editor">
       <input
       type="text"
       name="title" 
-      value={title}
-      onChange={handleChange}
+      value={noteTitle}
+      onChange={(e) => setNoteTitle(e.target.value)}
       />
       <textarea 
       name="body" 
-      value={body}
-      onChange={handleChange}
+      value={noteBody}
+      onChange={(e)=> setNoteBody(e.target.value)}
       />
       <div className="button-row">
-        <input className="button" type="submit" value="Save" />
-        <button onClick={onCancel} type="button">Cancel</button>
+        <input 
+        className="button" 
+        type="submit" 
+        value="Save" 
+        onClick={(e) => saveChanges(e)}/>
+        <button onClick={handleNoteCancel} type="button">Cancel</button>
       </div>
     </form>
   );

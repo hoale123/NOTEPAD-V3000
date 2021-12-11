@@ -4,77 +4,71 @@ import Sidebar from "./Sidebar";
 import Content from "./Content";
 
 function NoteContainer() {
-  const [notes, setNotes] = useState([])
+  const [notes, setAllNotes] = useState([])
+  const [selectedNotes, setSelectedNotes] = useState("")
   const [searchNotes, setSearchNotes] = useState("")
-  const [selectedNotes, setSelectedNotes] = useState({})
+  const [isEdit, toggleIsEdit] = useState(false)
+  const [isSelected, setIsSelected] = useState(false)
 
-  const notesToDisplay = notes.filter(note => note.title.toLowerCase().includes(searchNotes.toLocaleLowerCase()))
+
+  const displayNote = notes.filter((note) => {
+    if (searchNotes === "") return true;
+    return note.title.toUpperCase().includes(searchNotes.toUpperCase()) 
+  })
+
 
   useEffect(() => {
     fetch("http://localhost:3000/notes")
     .then(res => res.json())
-    .then(data => setNotes(data))
+    .then(data => setAllNotes(data))
   },[])
 
-  const saveNotes =(note) =>{
-    fetch(`http://localhost:3000/note/${note.id}`,{
-      method: "PATCH",
-      headers: {
-        'Content-Type' : 'application/json',
-        'Accept' : 'application/json',
-      },
-      body: JSON.stringify({
-        title: note.title,
-        body: note.body,
-        user_id: 1,
-      })
-    })
-    .then(res => res.json())
-    .then(setSelectedNotes)
+  const onClickSideBar = (note) => {
+    setSelectedNotes(note)
+    setIsSelected(true)
+    toggleIsEdit(false)
   }
+  // const saveNotes =(note) =>{
+  //   fetch(`http://localhost:3000/note/${note.id}`,{
+  //     method: "PATCH",
+  //     headers: {
+  //       'Content-Type' : 'application/json',
+  //       'Accept' : 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       title: note.title,
+  //       body: note.body,
+  //       user_id: 1,
+  //     })
+  //   })
+  //   .then(res => res.json())
+  //   .then(setSelectedNotes)
+  // }
 
-  const handleAddNotes = (newNotes) => {
-    setNotes([...notes, newNotes])
-  }
-  function handleSelectedNotes (id){ 
-    const selectedNote = notes.find(note => note.id === id);
-    setSelectedNotes(selectedNote);
-  }
-
-
-  const [noteShow, setNoteShow] = useState({
-    edit: false,
-    noted: {},
-  })
-function editOrState(note, noteShow){
-  if(noteShow.id !== note.id){
-    return {
-      edit: false,
-      noted: noted,
-    }
-  }
-  return noteShow;
-}
-  const {edit, noted} = noteShow
-  const toggleEdit = () =>{
-    setNoteShow({edit : !edit})
-  }
-
-
+  // const handleAddNotes = (newNotes) => {
+  //   setNotes([...notes, newNotes])
+  // }
+  // function handleSelectedNotes (id){ 
+  //   const selectedNote = notes.find(note => note.id === id);
+  //   setSelectedNotes(selectedNote);
+  // }
 
   return (
     <>
       <Search onchangeSearch={setSearchNotes} searchNotes={searchNotes} />
       <div className="container">
         <Sidebar 
-        onSelectedNote={handleSelectedNotes} 
-        onAddNote={handleAddNotes} 
-        notes={notesToDisplay} />
+        onClickSideBar = {onClickSideBar}
+        // onSelectedNote={handleSelectedNotes} 
+        // onAddNote={handleAddNotes} 
+        setAllNotes={setAllNotes}
+        notes={displayNote} />
         <Content 
-        editOrState={editOrState}
-        toggleEdit={toggleEdit}
-        note={selectedNotes} 
-        onSave={saveNotes}
+        selectedNotes={selectedNotes} 
+        isEdit={isEdit}
+        isSelected={isSelected}
+        // onSave={saveNotes}
+        toggleIsEdit={toggleIsEdit}
         />
       </div>
     </>

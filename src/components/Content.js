@@ -10,35 +10,22 @@ import Instructions from "./Instructions";
           Then complete the rest of your app before attempting to
           refactor to get this Content component to work.
 */
-function Content({note,onSave,toggleEdit}) {
-  // const {id} = note
-//   const [noteShow, setNoteShow] = useState({
-//     edit: false,
-//     noted: null,
-//   })
-// function editOrState(note, noteShow){
-//   if(noteShow.id !== note.id){
-//     return {
-//       edit: false,
-//       noted: noted,
-//     }
-//   }
-//   return noteShow;
-// }
-//   const {edit, noted} = noteShow
-//   const toggleEdit = () =>{
-//     setNoteShow({edit : !edit})
-//   }
+function Content({selectedNotes,toggleIsEdit,isEdit,isSelected}) {
+
+  const toggleEdit = () =>{
+    toggleIsEdit(true)
+  }
+
   const getContent = () => {
-    if (true) {
+    if (isEdit) {
       return <NoteEditor 
-      note={note} 
-      onSave={onSave}
-      onCancel = {toggleEdit}
+      note={selectedNotes} 
+      // onSave={onSave}
+      onCancel = {toggleIsEdit}
       />;
-    } else if (true) {
+    } else if (isSelected) {
       return <NoteViewer 
-      note={note}
+      note={selectedNotes}
       onEdit={toggleEdit}
        />;
     } else {
@@ -50,4 +37,3 @@ function Content({note,onSave,toggleEdit}) {
 }
 
 export default Content;
-// key={note.id} note={note}
